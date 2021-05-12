@@ -122,8 +122,12 @@ class OCI(BaseCloud):
             sort_by='TIMECREATED',
             sort_order='DESC'
         )
-        image_id = image_response.data[0].id
-        return image_id
+        for image in image_response.data:
+            if "GPU" in image.display_name:
+                continue
+            return image.id
+        else:
+            raise Exception("oh no")
 
     def image_serial(self, image_id):
         """Find the image serial of the latest daily image for a particular release.
